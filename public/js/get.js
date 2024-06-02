@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-    fetch('https://aurorac.onrender.com/CRUDRepo/ConsultarPersonas')
+    fetch('https://aurorac.onrender.com/crud/get')
     .then(response => response.json())
     .then(data => mostrarData(data))
     .catch(error => console.log(error));

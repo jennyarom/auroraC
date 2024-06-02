@@ -70,6 +70,18 @@ app.get('/carrito', (req, res) => {
     res.sendFile(path.join(__dirname, 'carrito.html'));
 });
 
+app.get('/crud/delete', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'crud', 'delete.html'));
+});
+
+app.get('/crud/get', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'crud', 'get.html'));
+});
+
+app.get('/crud/put', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'crud', 'put.html'));
+});
+
 // Definir la ruta para el cierre de sesión
 app.get('/logout', (req, res) => {
     res.redirect('/login/login.html');
@@ -139,7 +151,7 @@ app.post('/register', (req, res) => {
 });
 
 // Maneja las solicitudes GET para consultar personas
-app.get('/CRUDRepo/ConsultarPersonas', (req, res) => {
+app.get('/crud/get', (req, res) => {
     pool.query('SELECT * FROM usuario', (err, results) => {
         if (err) {
             console.error('Error al ejecutar la consulta:', err);
@@ -150,21 +162,8 @@ app.get('/CRUDRepo/ConsultarPersonas', (req, res) => {
     });
 });
 
-// Maneja las solicitudes POST para agregar una nueva persona
-app.post('/CRUDRepo/AgregarPersona', (req, res) => {
-    const { name, username, password } = req.body;
-    pool.query('INSERT INTO usuario (name, username, password) VALUES (?, ?, ?)', [name, username, password], (err, results) => {
-        if (err) {
-            console.error('Error al agregar la persona:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
-            return;
-        }
-        res.status(201).json({ message: 'Persona agregada exitosamente' });
-    });
-});
-
 // Maneja las solicitudes PUT para actualizar una persona
-app.put('/CRUDRepo/ActualizarPersona/:id', (req, res) => {
+app.put('/crud/put/:id', (req, res) => {
     const { id } = req.params;
     const { name, username } = req.body;
     if (!name || !username) {
@@ -185,7 +184,7 @@ app.put('/CRUDRepo/ActualizarPersona/:id', (req, res) => {
 });
 
 // Maneja las solicitudes DELETE para eliminar una persona
-app.delete('/CRUDRepo/EliminarPersona/:id', (req, res) => {
+app.delete('/crud/delete/:id', (req, res) => {
     const { id } = req.params;
     pool.query('DELETE FROM usuario WHERE id = ?', [id], (err, results) => {
         if (err) {
