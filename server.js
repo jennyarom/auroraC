@@ -91,18 +91,19 @@ app.get('/logout', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     const query = 'SELECT * FROM usuario WHERE username = ?';
+    console.log('Executing query:', query, 'with values:', [username]);
     pool.query(query, [username], (err, result) => {
         if (err) {
-            console.error('Error al realizar la consulta:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
             return;
         }
         if (result.length > 0) {
             const hashedPassword = result[0].password;
             bcrypt.compare(password, hashedPassword, (err, bcryptResult) => {
                 if (err) {
-                    console.error('Error al comparar contraseñas:', err);
-                    res.status(500).json({ error: 'Error interno del servidor' });
+                    console.error('Error comparing passwords:', err);
+                    res.status(500).json({ error: 'Internal server error' });
                     return;
                 }
                 if (bcryptResult) {
@@ -123,25 +124,27 @@ app.post('/register', (req, res) => {
     const saltRounds = 10;
     const insertUserQuery = 'INSERT INTO usuario (name, username, password) VALUES (?, ?, ?)';
     const checkUsernameQuery = 'SELECT * FROM usuario WHERE username = ?';
+    console.log('Executing query:', checkUsernameQuery, 'with values:', [username]);
     pool.query(checkUsernameQuery, [username], (err, result) => {
         if (err) {
-            console.error('Error al realizar la consulta:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
             return;
         }
         if (result.length > 0) {
-            return res.status(400).json({ error: 'El nombre de usuario ya está en uso' });
+            return res.status(400).json({ error: 'Username already in use' });
         }
         bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
             if (err) {
-                console.error('Error al cifrar la contraseña:', err);
-                res.status(500).json({ error: 'Error interno del servidor' });
+                console.error('Error hashing password:', err);
+                res.status(500).json({ error: 'Internal server error' });
                 return;
             }
+            console.log('Executing query:', insertUserQuery, 'with values:', [name, username, hashedPassword]);
             pool.query(insertUserQuery, [name, username, hashedPassword], (err, result) => {
                 if (err) {
-                    console.error('Error al insertar el usuario:', err);
-                    res.status(500).json({ error: 'Error interno del servidor' });
+                    console.error('Error inserting user:', err);
+                    res.status(500).json({ error: 'Internal server error' });
                     return;
                 }
                 res.json({ registered: true });
@@ -152,10 +155,12 @@ app.post('/register', (req, res) => {
 
 // Maneja las solicitudes GET para consultar personas
 app.get('/crud/get', (req, res) => {
-    pool.query('SELECT * FROM usuario', (err, results) => {
+    const query = 'SELECT * FROM usuario';
+    console.log('Executing query:', query);
+    pool.query(query, (err, results) => {
         if (err) {
-            console.error('Error al ejecutar la consulta:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
             return;
         }
         res.json(results);
@@ -167,32 +172,35 @@ app.put('/crud/put/:id', (req, res) => {
     const { id } = req.params;
     const { name, username } = req.body;
     if (!name || !username) {
-        return res.status(400).json({ error: 'Faltan datos necesarios' });
+        return res.status(400).json({ error: 'Missing required fields' });
     }
-    pool.query('UPDATE usuario SET name = ?, username = ? WHERE id = ?', [name, username, id], (err, results) => {
+    const query = 'UPDATE usuario SET name = ?, username = ? WHERE id = ?';
+    console.log('Executing query:', query, 'with values:', [name, username, id]);
+    pool.query(query, [name, username, id], (err, results) => {
         if (err) {
-            console.error('Error al actualizar la persona:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
             return;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json({ error: 'Persona no encontrada' });
+            res.status(404).json({ error: 'Persona not found' });
             return;
         }
-        res.json({ message: 'Persona actualizada exitosamente' });
+        res.json({ message: 'Persona updated successfully' });
     });
 });
 
-// Maneja las solicitudes DELETE para eliminar una persona
 app.delete('/crud/delete/:id', (req, res) => {
     const { id } = req.params;
-    pool.query('DELETE FROM usuario WHERE id = ?', [id], (err, results) => {
+    const query = 'DELETE FROM usuario WHERE id = ?';
+    console.log('Executing query:', query, 'with value:', [id]);
+    pool.query(query, [id], (err, results) => {
         if (err) {
-            console.error('Error al eliminar la persona:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
             return;
         }
-        res.json({ message: 'Persona eliminada exitosamente' });
+        res.json({ message: 'Persona deleted successfully' });
     });
 });
 
