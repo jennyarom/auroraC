@@ -21,7 +21,7 @@ $(document).ready(function() {
         let username = $('#username').val();
         let password = $('#password').val();
     
-        $.post('http://localhost:3000/login', { username: username,password: password }, function(response) {
+        $.post('https://aurorac.onrender.com/login', { username: username,password: password }, function(response) {
             if (response.exists) {
                 window.location.href = '../carrito.html';
             }else {
@@ -44,7 +44,7 @@ $(document).ready(function() {
         }
     
         $.ajax({
-            url: 'http://localhost:3000/register',
+            url: 'https://aurorac.onrender.com/register',
             type: 'POST',
             data: { name: name, username: username, password: password },
             success: function(response) {

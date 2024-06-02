@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(`Enviando solicitud de actualización para ID: ${userId}, Nombre: ${name}, Username: ${username}`);
   
             // Realizar la solicitud de actualización al servidor
-            fetch(`http://localhost:3000/CRUDRepo/ActualizarPersona/${userId}`, {
+            fetch(`https://aurorac.onrender.com/CRUDRepo/ActualizarPersona/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

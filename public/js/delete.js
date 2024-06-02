@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
         const id = document.getElementById('id').value;
   
-        fetch(`http://localhost:3000/CRUDRepo/EliminarPersona/${id}`, {
+        fetch(`https://aurorac.onrender.com/CRUDRepo/EliminarPersona/${id}`, {
             method: 'DELETE'
         })
         .then(response => {

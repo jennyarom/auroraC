@@ -210,5 +210,5 @@ app.use((err, req, res, next) => {
 
 // Inicia el servidor
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+    console.log(`Servidor escuchando en https://aurorac.onrender.com${port}`);
 });
